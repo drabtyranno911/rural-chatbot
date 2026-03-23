@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rural AI Chatbot</title>
+</head>
+<body>
+
+    <h1>Rural AI Chatbot</h1>
+
+    <input type="text" id="userInput" placeholder="Ask something">
+    <button onclick="sendMessage()">Send</button>
+
+    <p id="chat"></p>
+
+    <script>
+        function sendMessage() {
+            let message = document.getElementById("userInput").value;
+
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({message: message})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("chat").innerHTML += 
+                "<br><b>You:</b> " + message + 
+                "<br><b>Bot:</b> " + data.reply + "<br>";
+            });
+        }
+    </script>
+
+</body>
+</html>
