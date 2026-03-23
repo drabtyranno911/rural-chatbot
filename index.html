@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rural Chatbot</title>
+</head>
+
+<body>
+
+<h2>Rural AI Chatbot</h2>
+
+<input id="msg" placeholder="Ask something">
+<button onclick="send()">Send</button>
+
+<div id="chat"></div>
+
+<script>
+
+async function send(){
+
+let msg = document.getElementById("msg").value
+
+let res = await fetch("/chat",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+})
+
+let data = await res.json()
+
+document.getElementById("chat").innerHTML +=
+"<p><b>You:</b> "+msg+"</p>"+
+"<p><b>Bot:</b> "+data.reply+"</p>"
+
+}
+
+</script>
+
+</body>
+</html>
