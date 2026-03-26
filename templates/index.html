@@ -3,6 +3,12 @@
 <head>
     <title>Rural AI Chatbot</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: #000000;
@@ -11,32 +17,31 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
         .chat-container {
             width: 400px;
             height: 600px;
-            background: #1e293b;
+            background: #000000;
             border-radius: 15px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid #222;
         }
 
         .header {
             padding: 15px;
-            background: #334155;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
+            background: #000000;
             text-align: center;
             font-weight: bold;
+            border-bottom: 1px solid #222;
         }
 
         .chat-box {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
+            background: #000000;
         }
 
         .message {
@@ -47,18 +52,19 @@
         }
 
         .user {
-            background: #3b82f6;
+            background: #2563eb;
             align-self: flex-end;
         }
 
         .bot {
-            background: #475569;
+            background: #222222;
             align-self: flex-start;
         }
 
         .input-area {
             display: flex;
-            border-top: 1px solid #444;
+            border-top: 1px solid #222;
+            background: #000000;
         }
 
         input {
@@ -66,7 +72,7 @@
             padding: 10px;
             border: none;
             outline: none;
-            background: #0f172a;
+            background: #000000;
             color: white;
         }
 
@@ -86,7 +92,7 @@
 <body>
 
 <div class="chat-container">
-    <div class="header"> Rural AI Assistant</div>
+    <div class="header">Rural AI Assistant</div>
 
     <div class="chat-box" id="chatBox"></div>
 
@@ -104,6 +110,7 @@ function addMessage(text, sender) {
     msg.innerText = text;
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
+    return msg;
 }
 
 function sendMessage() {
@@ -115,6 +122,15 @@ function sendMessage() {
     addMessage(message, "user");
     input.value = "";
 
+    // Typing animation
+    let typingMsg = addMessage("Typing", "bot");
+
+    let dots = 0;
+    let interval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        typingMsg.innerText = "Typing" + ".".repeat(dots);
+    }, 300);
+
     fetch("/chat", {
         method: "POST",
         headers: {
@@ -124,7 +140,12 @@ function sendMessage() {
     })
     .then(res => res.json())
     .then(data => {
-        addMessage(data.reply, "bot");
+        clearInterval(interval);
+
+        setTimeout(() => {
+            typingMsg.remove();
+            addMessage(data.reply, "bot");
+        }, 800);
     });
 }
 </script>
